@@ -11,11 +11,11 @@ resource "aws_instance" "webserver" {
 
   user_data = <<-EOF
         #!/bin/bash
-        echo "Hello World" > index.html
+        echo "Hello, World - "`hostname` > index.html
         nohup busybox httpd -f -p 80 &
         EOF
   tags = {
-    "Name" = "webserver-manju"
+    "Name" = "webserver-manju-${count.index + 1}"
   }
   # Key created manually in AWS Console
   key_name = "manju-key"
@@ -71,3 +71,8 @@ resource "aws_security_group" "websg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+output "ipaddress" {
+  value = aws_instance.webserver[*].public_ip
+}
+
